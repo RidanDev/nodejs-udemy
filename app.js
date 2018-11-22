@@ -33,28 +33,44 @@ const server = http.createServer((req, res) => {
     if (url === '/message' && method === 'POST') {
         const body = []
         /*
+        the functions inside the req.on() are callback and, as such, they will be called sometimes 
+        in the future (asynchronous), they won't be called immediately 
+
         req.on() allows us to listen to certain events,
         and the event I want to listen to here is the data event.
         Now we are defining a function to be executed for every incoming data piece.
         */
         req.on('data', (chunk) => {
-          console.log(chunk)
-          body.push(chunk)  
+            console.log(chunk)
+            body.push(chunk)
         })
         /*
         The end listener will be fired once it's done parsing the incoming requests data
         or the incoming requests in general
+
+        The "return" allows to execute the function as soon as it gets the data, without continue
+        the code execution.
         */
-        req.on('end', () => {
+        return req.on('end', () => {
             //I'm able to convert it to a string because I know the user's input is a a text
             const parsedBody = Buffer.concat(body).toString()
             console.log(parsedBody)
             const message = parsedBody.split('=')[1]
-            fs.writeFileSync('message.txt', message)
+
+            /*
+            writeFileSync will block all the code execution untill it has finished writing
+            the file. This is not what we want even if the file is really small, because
+            we don't want our server to be blocked until this operation is done (just think about
+            a very big file).
+            So we're gonna use the err callback that allows us to execute only a part of code
+            after the file got written
+            */
+            fs.writeFile('message.txt', message, err => {
+                res.statusCode = 302
+                res.setHeader('Location', '/')
+                return res.end()
+            })
         })
-        res.statusCode = 302
-        res.setHeader('Location', '/')
-        return res.end()
     }
     res.setHeader('Content-Type', 'text/html')
     res.write('<html>')
