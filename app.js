@@ -9,6 +9,9 @@ const app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
+//forwards the request to the public folder allowing me to access the elements inside
+app.use(express.static(path.join(__dirname, 'public'))) 
+
 app.use('/admin', adminRoutes)
 app.use(shopRoutes)
 
