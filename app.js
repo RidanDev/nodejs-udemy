@@ -7,6 +7,9 @@ const shopRoutes = require('./routes/shop')
 
 const app = express()
 
+app.set('view engine', 'pug')
+app.set('views', 'views')
+
 app.use(bodyParser.urlencoded({ extended: false }))
 
 //forwards the request to the public folder allowing me to access the elements inside
