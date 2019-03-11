@@ -16,8 +16,7 @@ exports.postAddProduct = (req, res, next) => {
   res.redirect("/");
 };
 
-exports.getProducts = (req, res, next) => {
-  /*The fetchAll function gets a callback as an input.
+/*The fetchAll function gets a callback as an input.
     The callback allows me to get the data as soon as they are ready.
 
     The previous code didn't work cause the fetchAll() had an async code inside.
@@ -70,6 +69,7 @@ exports.getProducts = (req, res, next) => {
     Product.fetchAll(products => {prods: products})
     */
 
+exports.getProducts = (req, res, next) => {
   Product.fetchAll(products => {
     res.render("shop", {
       prods: products,
